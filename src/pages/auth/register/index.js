@@ -14,17 +14,37 @@ const Index = () => {
   const [userForm, setUserForm] = useState({
     firstName: "",
     lastName: "",
+    password: "",
     email: "",
-    password: ""
+    phone: "",
+    userType: "",
+    address: {
+      city: "",
+      zipCode: "",
+      street: ""
+    }
   });
 
   const {fetchData, data, error, loading} = useFetch({url:'/auth/register', method:"POST", body:userForm, token:null})
     
   const handleChange = (e) => {
-    setUserForm({
+    const value = e.target.value;
+    const name = e.target.name.split(".")[1];
+    if (e.target.name.split(".")[0] === "address") {
+      setUserForm({
+        ...userForm,
+        ["address"]: {
+          ...userForm.address,
+          [name]: value}
+      })
+    }
+    else {
+      setUserForm({
       ...userForm,
       [e.target.name]: e.target.value
     })
+    }
+    console.log(userForm)
   }
 
   const submitRegister = (e) => {
@@ -75,6 +95,61 @@ const Index = () => {
           required={true}
           onChange={(e) => handleChange(e)}
           value={userForm.password}
+        />
+        <Input
+          label="Phone"
+          type="text"
+          name="phone"
+          placeholder="veuillez saisir votre numéro de téléphone"
+          required={true}
+          onChange={(e) => handleChange(e)}
+          value={userForm.phone}
+        />
+        <Input
+          label="Street"
+          type="text"
+          name="address.street"
+          placeholder="veuillez saisir votre rue de résidence"
+          required={true}
+          onChange={(e) => handleChange(e)}
+          value={userForm.address.street}
+        />
+        <Input
+          label="City"
+          type="text"
+          name="address.city"
+          placeholder="veuillez saisir votre ville de résidence"
+          required={true}
+          onChange={(e) => handleChange(e)}
+          value={userForm.address.city}
+        />
+        <Input
+          label="Zip Code"
+          type="text"
+          name="address.zipCode"
+          placeholder="veuillez saisir le code postal"
+          required={true}
+          onChange={(e) => handleChange(e)}
+          value={userForm.address.zipCode}
+        />
+        <label>Type de compte</label>
+        <Input
+          label="COMPANY"
+          type="radio"
+          name="userType"
+          value="COMPANY"
+          placeholder="COMPANY"
+          required={true}
+          onChange={(e) => handleChange(e)}
+        />
+        <Input
+        label="FREELANCE"
+          type="radio"
+          name="userType"
+          value="FREELANCE"
+          placeholder="FREELANCE"
+          required={true}
+          onChange={(e) => handleChange(e)}
         />
         <Button
           type="submit"
