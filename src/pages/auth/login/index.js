@@ -10,25 +10,34 @@ import Loading from "@/components/UI/Loading";
 import Notification from "@/components/UI/Notification";
 
 const Index = () => {
-
   const router = useRouter();
 
   const { login } = useContext(UserContext);
 
   const [userForm, setUserForm] = useState({
     email: "",
-    password:""
+    password: "",
   });
 
   const [token, setToken] = useState();
 
-  const { fetchData, data, error, loading } = useFetch({ url: "/auth/login", method: "POST", body: userForm, token: null })
-  const { data: user, error: userError, loading:userLoading, fetchData:fetchDataUser } = useFetch({ url: "/user", method: "GET", body: null, token: token });
+  const { fetchData, data, error, loading } = useFetch({
+    url: "/auth/login",
+    method: "POST",
+    body: userForm,
+    token: null,
+  });
+  const {
+    data: user,
+    error: userError,
+    loading: userLoading,
+    fetchData: fetchDataUser,
+  } = useFetch({ url: "/user", method: "GET", body: null, token: token });
 
   useEffect(() => {
     if (data.token) {
       setToken(data.token);
-      localStorage.setItem('token', data.token);     
+      localStorage.setItem("token", data.token);
     }
   }, [data]);
 
@@ -38,37 +47,37 @@ const Index = () => {
       login({
         firstName: user.user.firstName,
         lastName: user.user.lastName,
-        email:user.user.email
-      })
-      router.push('/account/profil');
+        email: user.user.email,
+      });
+      router.push("/profil");
     }
-  },[token,user])
+  }, [token, user]);
 
   const handleChange = (e) => {
     setUserForm({
       ...userForm,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const submitLogin = (e) => {
     e.preventDefault();
     fetchData();
-  }
+  };
 
   return (
     <>
       <Loading isLoad={loading} />
       <Title title="Login" Level="h1" />
-      <form onSubmit={(e)=>submitLogin(e)}>
+      <form onSubmit={(e) => submitLogin(e)}>
         <Input
-        label="Email"
-        type="email" 
-        name="email" 
-        placeholder="veuillez saisir votre email"
-        required={true}
-        onChange={(e) => handleChange(e)}
-        value={userForm.email}
+          label="Email"
+          type="email"
+          name="email"
+          placeholder="veuillez saisir votre email"
+          required={true}
+          onChange={(e) => handleChange(e)}
+          value={userForm.email}
         />
         <Input
           label="Password"
@@ -79,23 +88,15 @@ const Index = () => {
           onChange={(e) => handleChange(e)}
           value={userForm.password}
         />
-        <Button
-          type="submit"
-          title="Se connecter"
-          className="btn__secondary"
-        />
+        <Button type="submit" title="Se connecter" className="btn__secondary" />
       </form>
-      {
-        error && (
-          <Notification type="warning" message={error.message}/>
-        )
-      }
+      {error && <Notification type="warning" message={error.message} />}
       <p>
-        Vous n'avez pas de compte ? <Link href="/auth/register">Inscrivez-vous ?</Link>
+        Vous n'avez pas de compte ?{" "}
+        <Link href="/auth/register">Inscrivez-vous ?</Link>
       </p>
     </>
   );
-
-}
+};
 
 export default Index;

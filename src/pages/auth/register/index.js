@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
-import Title from '@/components/UI/Title';
+import Title from "@/components/UI/Title";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import Notification from "@/components/UI/Notification";
-import useFetch from '@/hooks/useFetch';
+import useFetch from "@/hooks/useFetch";
+import styles from "./index.module.scss";
 
 const Index = () => {
-
   const router = useRouter();
 
   const [userForm, setUserForm] = useState({
@@ -21,13 +21,18 @@ const Index = () => {
     address: {
       city: "",
       zipCode: "",
-      street: ""
-    }
+      street: "",
+    },
   });
 
-  const {fetchData, data, error, loading} = useFetch({url:'/auth/register', method:"POST", body:userForm, token:null})
-    
-  const handleChange = (e) => {
+  const { fetchData, data, error, loading } = useFetch({
+    url: "/auth/register",
+    method: "POST",
+    body: userForm,
+    token: null,
+  });
+
+  const handleUserChange = (e) => {
     const value = e.target.value;
     const name = e.target.name.split(".")[1];
     if (e.target.name.split(".")[0] === "address") {
@@ -35,138 +40,138 @@ const Index = () => {
         ...userForm,
         ["address"]: {
           ...userForm.address,
-          [name]: value}
-      })
-    }
-    else {
+          [name]: value,
+        },
+      });
+    } else {
       setUserForm({
-      ...userForm,
-      [e.target.name]: e.target.value
-    })
+        ...userForm,
+        [e.target.name]: e.target.value,
+      });
     }
-    console.log(userForm)
-  }
+  };
 
   const submitRegister = (e) => {
     e.preventDefault();
     fetchData();
     if (data) {
-      localStorage.setItem('token', data.token);
-      router.push('/account/profil')
+      localStorage.setItem("token", data.token);
+      router.push("/profil");
     }
-  }
+  };
 
   return (
     <>
       <Title title="Inscription" Level="h1" />
       <form onSubmit={(e) => submitRegister(e)}>
-        <Input
-          label="Firstname"
-          type="firstName"
-          name="firstName"
-          placeholder="veuillez saisir votre prénom"
-          required={true}
-          onChange={(e) => handleChange(e)}
-          value={userForm.firstName}
-        />
-        <Input
-          label="Lastname"
-          type="lastName"
-          name="lastName"
-          placeholder="veuillez saisir votre nom"
-          required={true}
-          onChange={(e) => handleChange(e)}
-          value={userForm.lastName}
-        />
-        <Input
-          label="Email"
-          type="email"
-          name="email"
-          placeholder="veuillez saisir votre email"
-          required={true}
-          onChange={(e) => handleChange(e)}
-          value={userForm.email}
-        />
+        <div className={styles.displayLayout}>
+          <Input
+            label="Firstname"
+            type="firstName"
+            name="firstName"
+            placeholder="Arnold"
+            required={true}
+            onChange={(e) => handleUserChange(e)}
+            value={userForm.firstName}
+          />
+          <Input
+            label="Lastname"
+            type="lastName"
+            name="lastName"
+            placeholder="Schwarzenegger"
+            required={true}
+            onChange={(e) => handleUserChange(e)}
+            value={userForm.lastName}
+          />
+        </div>
+        <div className={styles.displayLayout}>
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            placeholder="email@example.com"
+            required={true}
+            onChange={(e) => handleUserChange(e)}
+            value={userForm.email}
+          />
+          <Input
+            label="Phone"
+            type="text"
+            name="phone"
+            placeholder="06 00 00 00 00"
+            required={true}
+            onChange={(e) => handleUserChange(e)}
+            value={userForm.phone}
+          />
+        </div>
         <Input
           label="Password"
           type="password"
           name="password"
-          placeholder="veuillez saisir votre mot de passe"
+          placeholder="Mot de passe"
           required={true}
-          onChange={(e) => handleChange(e)}
+          onChange={(e) => handleUserChange(e)}
           value={userForm.password}
-        />
-        <Input
-          label="Phone"
-          type="text"
-          name="phone"
-          placeholder="veuillez saisir votre numéro de téléphone"
-          required={true}
-          onChange={(e) => handleChange(e)}
-          value={userForm.phone}
         />
         <Input
           label="Street"
           type="text"
           name="address.street"
-          placeholder="veuillez saisir votre rue de résidence"
+          placeholder="5 avenue Anatole France"
           required={true}
-          onChange={(e) => handleChange(e)}
+          onChange={(e) => handleUserChange(e)}
           value={userForm.address.street}
         />
-        <Input
-          label="City"
-          type="text"
-          name="address.city"
-          placeholder="veuillez saisir votre ville de résidence"
-          required={true}
-          onChange={(e) => handleChange(e)}
-          value={userForm.address.city}
-        />
-        <Input
-          label="Zip Code"
-          type="text"
-          name="address.zipCode"
-          placeholder="veuillez saisir le code postal"
-          required={true}
-          onChange={(e) => handleChange(e)}
-          value={userForm.address.zipCode}
-        />
+        <div className={styles.displayLayout}>
+          <Input
+            label="City"
+            type="text"
+            name="address.city"
+            placeholder="Paris"
+            required={true}
+            onChange={(e) => handleUserChange(e)}
+            value={userForm.address.city}
+          />
+          <Input
+            label="Zip Code"
+            type="text"
+            name="address.zipCode"
+            placeholder="75000  "
+            required={true}
+            onChange={(e) => handleUserChange(e)}
+            value={userForm.address.zipCode}
+          />
+        </div>
         <label>Type de compte</label>
-        <Input
-          label="COMPANY"
-          type="radio"
+        <select
+          id="userType"
           name="userType"
-          value="COMPANY"
-          placeholder="COMPANY"
-          required={true}
-          onChange={(e) => handleChange(e)}
-        />
-        <Input
-        label="FREELANCE"
-          type="radio"
-          name="userType"
-          value="FREELANCE"
-          placeholder="FREELANCE"
-          required={true}
-          onChange={(e) => handleChange(e)}
-        />
-        <Button
-          type="submit"
-          title="Se connecter"
-          className="btn__secondary"
-        />
+          className={styles.select}
+          onChange={(e) => handleUserChange(e)}
+        >
+          <option value="">--Veuillez choisir une option--</option>
+          <option value="COMPANY">Company</option>
+          <option value="FREELANCE">Freelance</option>
+        </select>
+        {(userForm.userType === "COMPANY" && (
+          <>
+            <label>Company</label>
+          </>
+        )) ||
+          (userForm.userType === "FREELANCE" && (
+            <>
+              <label>Freelance</label>
+            </>
+          ))}
+        <Button type="submit" title="Se connecter" className="btn__secondary" />
       </form>
-      {
-        error && (
-          <Notification type="warning" message={error.message} />
-        )
-      }
+      {error && <Notification type="warning" message={error.message} />}
       <p>
-        Vous avez déjà un compte ? <Link href="/auth/login">Connectez-vous ?</Link>
+        Vous avez déjà un compte ?{" "}
+        <Link href="/auth/login">Connectez-vous ?</Link>
       </p>
     </>
   );
-}
+};
 
 export default Index;
